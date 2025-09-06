@@ -6,7 +6,6 @@ import {
   Users, 
   LogOut,
   User,
-  Settings,
   Menu,
   X
 } from 'lucide-react';
@@ -70,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange
       {/* Sidebar */}
       <div className={`
         fixed lg:static inset-y-0 left-0 z-50
-        w-72 sm:w-80 lg:w-64 bg-hdr-white border-r border-gray-200
+        w-64 sm:w-72 lg:w-64 bg-gray-900 border-r border-gray-700
         transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         flex flex-col h-full

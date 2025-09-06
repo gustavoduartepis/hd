@@ -3,7 +3,6 @@ import {
   Plus, 
   Search, 
   Filter, 
-  Calendar,
   DollarSign,
   TrendingUp,
   TrendingDown,
@@ -11,6 +10,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+import type { Transaction } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
 
 
@@ -312,6 +312,11 @@ const TransactionsPage: React.FC = () => {
     }
   };
 
+  const handleEditTransaction = (transaction: Transaction) => {
+    // Implementar edição de transação no futuro
+    console.log('Editar transação:', transaction);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -453,11 +458,7 @@ const TransactionsPage: React.FC = () => {
                   }`}>
                     {transaction.type === 'income' ? 'Receita' : 'Despesa'}
                   </span>
-                  {transaction.isFixed && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                      Fixo
-                    </span>
-                  )}
+
                 </div>
                 
                 <div className="flex justify-end space-x-2">
@@ -522,11 +523,7 @@ const TransactionsPage: React.FC = () => {
                   <td className="px-4 lg:px-6 py-4 text-sm text-gray-900">
                     <div>
                       <div className="font-medium">{transaction.description}</div>
-                      {transaction.isFixed && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-hdr-yellow bg-opacity-20 text-hdr-black mt-1">
-                          Fixo
-                        </span>
-                      )}
+
                       <div className="md:hidden mt-1 text-sm text-gray-500">
                         {transaction.category}
                       </div>

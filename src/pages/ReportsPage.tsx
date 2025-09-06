@@ -6,8 +6,7 @@ import {
   TrendingDown,
   DollarSign,
   Calendar,
-  Download,
-  Filter
+  Download
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 

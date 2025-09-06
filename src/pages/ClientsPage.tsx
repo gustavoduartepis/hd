@@ -458,7 +458,6 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose }) => {
       email: formData.email,
       phone: formData.phone,
       company: formData.company || undefined,
-      contractProposal: formData.contractProposal || undefined,
       address: formData.address,
       totalRevenue: 0,
       lastProject: 'Novo cliente',
@@ -782,7 +781,7 @@ const ViewClientModal: React.FC<ViewClientModalProps> = ({ client, onClose }) =>
 interface EditClientModalProps {
   client: Client;
   onClose: () => void;
-  onSave: (id: string, clientData: Partial<Client>) => void;
+  onSave: (clientData: Client) => void;
 }
 
 const EditClientModal: React.FC<EditClientModalProps> = ({ client, onClose, onSave }) => {
@@ -824,7 +823,12 @@ const EditClientModal: React.FC<EditClientModalProps> = ({ client, onClose, onSa
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(client.id, formData);
+    const updatedClient: Client = {
+      ...client,
+      ...formData,
+      company: formData.company || undefined
+    };
+    onSave(updatedClient);
     onClose();
   };
 

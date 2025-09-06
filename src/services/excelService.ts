@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import { Transaction, Client } from '../contexts/AppContext';
+import type { Transaction, Client } from '../contexts/AppContext';
 
 export interface ExportData {
   transactions: Transaction[];
@@ -30,8 +30,8 @@ export class ExcelService {
         ['Receita Total', `R$ ${data.summary.totalRevenue.toFixed(2).replace('.', ',')}`],
         ['Despesas Totais', `R$ ${data.summary.totalExpenses.toFixed(2).replace('.', ',')}`],
         ['Saldo', `R$ ${data.summary.balance.toFixed(2).replace('.', ',')}`],
-        ['Total de Clientes', data.summary.totalClients],
-        ['Total de Transações', data.summary.totalTransactions]
+        ['Total de Clientes', data.summary.totalClients.toString()],
+        ['Total de Transações', data.summary.totalTransactions.toString()]
       ];
       const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
       XLSX.utils.book_append_sheet(workbook, summarySheet, 'Resumo');
@@ -92,7 +92,7 @@ export class ExcelService {
           revenueCategoryData.push([
             category,
             `R$ ${info.total.toFixed(2).replace('.', ',')}`,
-            info.count
+            info.count.toString()
           ]);
         });
         
@@ -111,7 +111,7 @@ export class ExcelService {
           expensesCategoryData.push([
             category,
             `R$ ${info.total.toFixed(2).replace('.', ',')}`,
-            info.count
+            info.count.toString()
           ]);
         });
         
@@ -130,7 +130,7 @@ export class ExcelService {
           clientRevenueData.push([
             clientInfo.clientName,
             `R$ ${clientInfo.totalRevenue.toFixed(2).replace('.', ',')}`,
-            clientInfo.transactionCount,
+            clientInfo.transactionCount.toString(),
             `R$ ${clientInfo.averageTicket.toFixed(2).replace('.', ',')}`,
             clientInfo.lastTransaction ? new Date(clientInfo.lastTransaction).toLocaleDateString('pt-BR') : 'N/A',
             clientInfo.status || 'Ativo'
@@ -165,9 +165,9 @@ export class ExcelService {
       extrasData.push(['Estatísticas Gerais', '']);
       extrasData.push(['Receita Média por Cliente', `R$ ${(data.summary.totalRevenue / Math.max(data.clients.length, 1)).toFixed(2).replace('.', ',')}`]);
       extrasData.push(['Transação Média', `R$ ${(data.summary.totalRevenue / Math.max(data.summary.totalTransactions, 1)).toFixed(2).replace('.', ',')}`]);
-      extrasData.push(['Clientes Ativos', data.clients.filter(c => c.status === 'active').length]);
-      extrasData.push(['Clientes Inativos', data.clients.filter(c => c.status === 'inactive').length]);
-      extrasData.push(['Clientes Prospects', data.clients.filter(c => c.status === 'prospect').length]);
+      extrasData.push(['Clientes Ativos', data.clients.filter(c => c.status === 'active').length.toString()]);
+      extrasData.push(['Clientes Inativos', data.clients.filter(c => c.status === 'inactive').length.toString()]);
+      extrasData.push(['Clientes Prospects', data.clients.filter(c => c.status === 'prospect').length.toString()]);
       
       const extrasSheet = XLSX.utils.aoa_to_sheet(extrasData);
       XLSX.utils.book_append_sheet(workbook, extrasSheet, 'Extras e Estatísticas');
@@ -231,7 +231,9 @@ export class ExcelService {
                   phone: row[3] || undefined,
                   address: row[4] || undefined,
                   totalRevenue: this.parseAmount(row[5]) || 0,
-                  status: row[6] || 'Ativo'
+                  status: row[6] || 'active',
+                  lastProject: row[7] || 'Projeto Importado',
+                  contractType: row[8] || 'Mensal'
                 }));
               }
             }

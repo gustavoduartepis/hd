@@ -27,9 +27,11 @@ export const MainLayout: React.FC = () => {
     <div className="flex h-screen bg-gray-50">
       <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       
-      <div className="flex-1 overflow-auto lg:ml-0">
-        <main className="p-4 lg:p-6 pt-16 lg:pt-6">
-          {renderContent()}
+      <div className="flex-1 overflow-auto ml-0 lg:ml-0">
+        <main className="p-4 lg:p-6 pt-16 lg:pt-6 min-h-full">
+          <div className="max-w-full overflow-x-auto">
+            {renderContent()}
+          </div>
         </main>
       </div>
     </div>

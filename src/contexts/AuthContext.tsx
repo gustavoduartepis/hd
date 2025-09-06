@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 
 export interface User {
   id: string;
@@ -18,8 +19,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demonstration
-const mockUsers: (User & { password: string })[] = [
+// Default users for demonstration
+const defaultUsers: (User & { password: string })[] = [
   {
     id: '1',
     email: 'admin@audiovisual.com',
@@ -36,10 +37,36 @@ const mockUsers: (User & { password: string })[] = [
   }
 ];
 
+// Get users from localStorage or use default users
+const getStoredUsers = (): (User & { password: string })[] => {
+  const stored = localStorage.getItem('audiovisual_users');
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return defaultUsers;
+    }
+  }
+  return defaultUsers;
+};
+
+// Save users to localStorage
+const saveUsers = (users: (User & { password: string })[]) => {
+  localStorage.setItem('audiovisual_users', JSON.stringify(users));
+};
+
+// Initialize users from storage
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    // Initialize default users if not exists
+    const stored = localStorage.getItem('audiovisual_users');
+    if (!stored) {
+      saveUsers(defaultUsers);
+    }
+    
     // Check if user is logged in on app start
     const savedUser = localStorage.getItem('audiovisual_user');
     if (savedUser) {
@@ -51,7 +78,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const foundUser = mockUsers.find(u => u.email === email && u.password === password);
+    // Get fresh users from storage
+    const currentUsers = getStoredUsers();
+    const foundUser = currentUsers.find(u => u.email === email && u.password === password);
     
     if (foundUser) {
       const { password: _, ...userWithoutPassword } = foundUser;
@@ -67,8 +96,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Get fresh users from storage
+    const currentUsers = getStoredUsers();
+    
     // Check if user already exists
-    const existingUser = mockUsers.find(u => u.email === email);
+    const existingUser = currentUsers.find(u => u.email === email);
     if (existingUser) {
       return false;
     }
@@ -80,8 +112,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       role
     };
     
-    // In a real app, this would be saved to a database
-    mockUsers.push({ ...newUser, password });
+    // Add new user to the list and save to localStorage
+    const updatedUsers = [...currentUsers, { ...newUser, password }];
+    saveUsers(updatedUsers);
     
     setUser(newUser);
     localStorage.setItem('audiovisual_user', JSON.stringify(newUser));

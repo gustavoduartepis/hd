@@ -20,9 +20,7 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
-  LineChart,
-  Line
+  Cell
 } from 'recharts';
 
 // Dados calculados dinamicamente a partir das transações reais
@@ -41,8 +39,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   value, 
   change, 
   changeType = 'neutral', 
-  icon, 
-  color 
+  icon 
 }) => {
   const getChangeColor = () => {
     switch (changeType) {
@@ -119,7 +116,7 @@ export const DashboardPage: React.FC = () => {
   const totalExpenses = getTotalExpenses();
   const balance = getBalance();
   const activeClients = getActiveClientsCount();
-  const totalProjects = state.clients.reduce((sum, client) => sum + client.projectsCount, 0);
+  const totalProjects = state.clients.length; // Usando número de clientes como proxy para projetos
   
   const currentMonth = new Date().toLocaleDateString('pt-BR', { 
     month: 'long', 
